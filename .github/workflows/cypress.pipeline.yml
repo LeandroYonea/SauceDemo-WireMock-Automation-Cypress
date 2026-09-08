@@ -5,9 +5,9 @@ name: Cypress Pipeline
 # Neste caso, a pipeline será executado quando houver um pull request para a branch master
 on:
   push:
-    branches: [main]
+    branches: [master]
   pull_request:
-    branches: [main]
+    branches: [master]
 
 # Definição dos jobs
 # Cada job é executado em um ambiente separado e pode ter suas próprias etapas      
