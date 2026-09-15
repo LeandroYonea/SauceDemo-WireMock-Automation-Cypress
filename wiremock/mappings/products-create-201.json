@@ -1,0 +1,31 @@
+{
+  "request": {
+    "method": "POST",
+    "url": "/products",
+    "headers": {
+      "Content-Type": {
+        "contains": "application/json"
+      },
+      "Authorization": {
+        "matches": "Bearer .*"
+      }
+    },
+    "bodyPatterns": [
+      { "matchesJsonPath": "$.name", "equalTo": "Sauce Labs Backpack" },
+      { "matchesJsonPath": "$.price", "equalTo": "29.99" }
+    ]
+  },
+  "response": {
+    "status": 201,
+    "headers": {
+      "Content-Type": "application/json",
+      "X-Trace-Id": "trace-product-create-201"
+    },
+    "jsonBody": {
+      "id": 101,
+      "name": "Sauce Labs Backpack",
+      "price": 29.99,
+      "traceId": "trace-product-create-201"
+    }
+  }
+}

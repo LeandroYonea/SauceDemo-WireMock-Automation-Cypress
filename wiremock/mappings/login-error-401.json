@@ -1,0 +1,22 @@
+{
+  "priority": 80,
+  "request": {
+    "method": "POST",
+    "url": "/login",
+    "bodyPatterns": [
+      { "equalToJson": "{\"username\":\"invalid_user\",\"password\":\"wrong_pass\"}", "ignoreArrayOrder": true, "ignoreExtraElements": false }
+    ]
+  },
+  "response": {
+    "status": 401,
+    "headers": {
+      "Content-Type": "application/json",
+      "X-Trace-Id": "trace-login-error-401"
+    },
+    "jsonBody": {
+      "error": "Unauthorized",
+      "traceId": "trace-login-error-401",
+      "message": "Invalid credentials"
+    }
+  }
+}

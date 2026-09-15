@@ -20,10 +20,12 @@ jobs:
     # Definição das variáveis de ambiente
     # As variáveis de ambiente são definidas a partir dos secrets do repositório
     env:
-     BASE_URL: ${{ secrets.BASE_URL }}
-     USER_EMAIL: ${{ secrets.USER_EMAIL }}
-     LOCKED_USER: ${{ secrets.LOCKED_USER }}
-     PASSWORD_USER: ${{ secrets.PASSWORD_USER }}
+      BASE_URL: '${{ secrets.BASE_URL }}'
+      # URL local usada pelos testes de API para acessar o WireMock no runner.
+      BASE_URL_WIREMOCK: http://localhost:8080
+      USER_EMAIL: '${{ secrets.USER_EMAIL }}'
+      LOCKED_USER: '${{ secrets.LOCKED_USER }}'
+      PASSWORD_USER: '${{ secrets.PASSWORD_USER }}'
 
     # Definição das etapas do job  
     steps:
@@ -36,14 +38,56 @@ jobs:
           node-version: 20
           cache: npm
 
+      # O WireMock é executado em Java, por isso o Java precisa estar disponível no runner.
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
+
       - name: Install dependencies
         run: npm install
 
       - name: Install Cypress binary
         run: npx cypress install --force
 
+      # Baixa o WireMock durante a execução para não versionar um binário pesado no repositório.
+      - name: Download WireMock
+        run: |
+          mkdir -p wiremock
+          curl --fail --silent --show-error --location \
+            --output wiremock/wiremock-standalone-3.9.1.jar \
+            https://repo1.maven.org/maven2/org/wiremock/wiremock-standalone/3.9.1/wiremock-standalone-3.9.1.jar
+
+      # Inicia a API mockada em segundo plano e salva o PID para encerrá-la ao final.
+      - name: Start WireMock
+        run: |
+          nohup java -jar ./wiremock/wiremock-standalone-3.9.1.jar --port 8080 --root-dir ./wiremock > wiremock.log 2>&1 &
+          echo $! > wiremock.pid
+
+      # Aguarda o WireMock responder antes de iniciar os testes Cypress.
+      - name: Wait for WireMock
+        run: |
+          for attempt in {1..30}; do
+            if curl --silent --fail http://localhost:8080/__admin/mappings > /dev/null; then
+              exit 0
+            fi
+            sleep 1
+          done
+          cat wiremock.log
+          exit 1
+
+      # Executa os testes frontend e backend com o WireMock disponível.
       - name: Run Cypress tests
         run: npx cypress run --browser electron
+
+      # Garante que o processo do WireMock seja encerrado mesmo se algum teste falhar.
+      - name: Stop WireMock
+        if: always()
+        run: |
+          if [ -f wiremock.pid ]; then
+            kill "$(cat wiremock.pid)" || true
+          fi
 
       # Upload do relatório do mocha
       - name: upload relatório

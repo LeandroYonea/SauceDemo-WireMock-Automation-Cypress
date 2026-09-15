@@ -1,0 +1,25 @@
+{
+  "priority": 100,
+  "request": {
+    "method": "POST",
+    "url": "/login",
+    "bodyPatterns": [
+      { "equalToJson": "{\"username\":\"standard_user\",\"password\":\"secret_sauce\"}", "ignoreArrayOrder": true, "ignoreExtraElements": false }
+    ]
+  },
+  "response": {
+    "status": 200,
+    "headers": {
+      "Content-Type": "application/json",
+      "X-Trace-Id": "trace-login-success-123"
+    },
+    "jsonBody": {
+      "token": "mock-token-123",
+      "traceId": "trace-login-success-123",
+      "user": {
+        "username": "standard_user",
+        "name": "Standard User"
+      }
+    }
+  }
+}

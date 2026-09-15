@@ -1,0 +1,24 @@
+{
+  "priority": 70,
+  "request": {
+    "method": "GET",
+    "url": "/products/999999",
+    "headers": {
+      "Authorization": {
+        "matches": "Bearer .*"
+      }
+    }
+  },
+  "response": {
+    "status": 404,
+    "headers": {
+      "Content-Type": "application/json",
+      "X-Trace-Id": "trace-products-not-found-404"
+    },
+    "jsonBody": {
+      "error": "Not Found",
+      "traceId": "trace-products-not-found-404",
+      "message": "Product not found"
+    }
+  }
+}

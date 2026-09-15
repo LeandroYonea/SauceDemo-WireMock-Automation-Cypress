@@ -1,0 +1,22 @@
+{
+  "priority": 90,
+  "request": {
+    "method": "POST",
+    "url": "/login",
+    "bodyPatterns": [
+      { "equalToJson": "{\"username\":\"standard_user\"}", "ignoreArrayOrder": true, "ignoreExtraElements": false }
+    ]
+  },
+  "response": {
+    "status": 400,
+    "headers": {
+      "Content-Type": "application/json",
+      "X-Trace-Id": "trace-login-error-400"
+    },
+    "jsonBody": {
+      "error": "Bad Request",
+      "traceId": "trace-login-error-400",
+      "message": "Password is required"
+    }
+  }
+}
