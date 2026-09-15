@@ -7,3 +7,5 @@ cypress/downloads/
 cypress/screenshots/
 cypress/videos/
 cypress/reports/
+wiremock/*.jar
+wiremock/**/wiremock-standalone-*.jar

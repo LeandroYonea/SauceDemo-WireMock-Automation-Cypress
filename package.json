@@ -5,7 +5,10 @@
   "scripts": {
     "test": "cypress run",
     "cy:open": "cypress open",
-    "cy:run": "cypress run"
+    "cy:run": "cypress run",
+    "wiremock:up": "java -jar ./wiremock/wiremock-standalone-3.9.1.jar --port 8080 --root-dir ./wiremock",
+    "wiremock:down": "powershell -NoProfile -Command \"$p = Get-NetTCPConnection -LocalPort 8080 -ErrorAction SilentlyContinue; if ($p) { $p | ForEach-Object { Stop-Process -Id $_.OwningProcess -Force } }\"",
+    "test:api": "cypress run --spec \"cypress/backend/e2e/**/*.cy.js\""
   },
   "keywords": [],
   "author": "",
