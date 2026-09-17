@@ -6,7 +6,7 @@ module.exports = defineConfig({
   reporter: 'cypress-mochawesome-reporter',
   reporterOptions: {
     reportDir: 'cypress/reports',
-    overwrite: false,
+    overwrite: true,
     html: true,
     json: true,
   },
@@ -24,6 +24,7 @@ module.exports = defineConfig({
     supportFile: "cypress/support/e2e.js",
     video: false,
     screenshotOnRunFailure: true,
+    trashAssetsBeforeRuns: true,
     defaultCommandTimeout: 10000,
     pageLoadTimeout: 30000,
     retries: {

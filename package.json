@@ -7,8 +7,14 @@
     "cy:open": "cypress open",
     "cy:run": "cypress run",
     "wiremock:up": "java -jar ./wiremock/wiremock-standalone-3.9.1.jar --port 8080 --root-dir ./wiremock",
-    "wiremock:down": "powershell -NoProfile -Command \"$p = Get-NetTCPConnection -LocalPort 8080 -ErrorAction SilentlyContinue; if ($p) { $p | ForEach-Object { Stop-Process -Id $_.OwningProcess -Force } }\"",
-    "test:api": "cypress run --spec \"cypress/backend/e2e/**/*.cy.js\""
+    "wiremock:down": "powershell -NoProfile -Command \"$connections = netstat -ano | Select-String ':8080'; if ($connections) { $connections | ForEach-Object { $processId = ($_ -split '\\s+')[-1]; Stop-Process -Id $processId -Force -ErrorAction SilentlyContinue } }\"",
+    "test:api": "cypress run --spec \"cypress/backend/e2e/**/*.cy.js\"",
+    "performance:k6": "k6 run performance/k6/tests/products-load.js",
+    "performance:k6:login": "k6 run performance/k6/tests/login-load.js",
+    "performance:k6:login-errors": "k6 run performance/k6/tests/login-errors-load.js",
+    "performance:k6:create": "k6 run performance/k6/tests/product-create-load.js",
+    "performance:k6:errors": "k6 run performance/k6/tests/product-errors-load.js",
+    "performance:k6:all": "k6 run performance/k6/tests/performance-suite.js"
   },
   "keywords": [],
   "author": "",

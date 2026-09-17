@@ -9,3 +9,5 @@ cypress/videos/
 cypress/reports/
 wiremock/*.jar
 wiremock/**/wiremock-standalone-*.jar
+.vscode/
+report/*.html
