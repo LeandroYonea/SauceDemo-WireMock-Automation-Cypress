@@ -45,6 +45,10 @@ jobs:
           distribution: temurin
           java-version: 17
 
+      # Instala o k6 para executar os testes de performance da API.
+      - name: Setup k6
+        uses: grafana/setup-k6-action@v1
+
       - name: Install dependencies
         run: npm install
 
@@ -81,6 +85,10 @@ jobs:
       - name: Run Cypress tests
         run: npx cypress run --browser electron
 
+      # Executa todos os cenários k6 em uma rodada e gera um relatório HTML consolidado.
+      - name: Run k6 performance tests
+        run: npm run performance:k6:all
+
       # Garante que o processo do WireMock seja encerrado mesmo se algum teste falhar.
       - name: Stop WireMock
         if: always()
@@ -95,3 +103,12 @@ jobs:
         with:
           name: Relatório
           path: cypress/reports
+
+      # Publica o relatório geral e os relatórios individuais do k6.
+      - name: Upload relatório k6
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: Relatório k6
+          path: report
+          if-no-files-found: warn
